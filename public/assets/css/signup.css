@@ -1,0 +1,156 @@
+/* Style global */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+/* Formulaire */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #4caf50;
+    outline: none;
+}
+
+button {
+    background-color: #4caf50;
+    color: white;
+    padding: 12px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Messages */
+p {
+    color: #d9534f;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    margin-top: 30px;
+}
+
+.footer p {
+    font-size: 1em;
+}
+
+/* Styles pour les �crans mobiles */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    button {
+        font-size: 1em;
+    }
+}
+
+/* Navigation Bar */
+.navbar {
+    background-color: #333;
+    padding: 10px;
+}
+
+.navbar a {
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1.1em;
+}
+
+.navbar a:hover {
+    background-color: #575757;
+    color: #fff;
+}
+
+/* Navbar responsive */
+@media (max-width: 768px) {
+    .navbar {
+        text-align: center;
+    }
+
+    .navbar a {
+        display: block;
+        margin: 5px 0;
+    }
+}
+#nom-error, #prenom-error, #email-error, #mot_de_passe-error, #mot_de_passe_confirmation-error {
+    font-size: 0.9em;
+    color: red;
+    margin-top: 5px;
+}
+
+.error {
+    font-size: 0.9em;
+    color: red;
+    margin-top: 5px;
+    display: none; /* Les erreurs sont masquées par défaut */
+}
