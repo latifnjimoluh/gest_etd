@@ -9,7 +9,7 @@ $(document).ready(function () {
         var formData = $(this).serialize();
 
         $.ajax({
-            url: 'signin.php',
+            url: 'signup.php',
             type: 'POST',
             data: formData,
             dataType: 'json',

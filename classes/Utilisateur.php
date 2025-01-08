@@ -71,5 +71,23 @@ class Utilisateur {
         return $pdo->lastInsertId();
     }
 
+     // Méthode pour vérifier les informations de connexion de l'utilisateur
+     public static function verifierConnexion($email, $mot_de_passe) {
+        $pdo = \App\DBConnection::getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE email = ?");
+        $stmt->execute([$email]);
+        $utilisateur = $stmt->fetch();
+
+        if ($utilisateur) {
+            // Vérifier si le mot de passe correspond
+            if (password_verify($mot_de_passe, $utilisateur['mot_de_passe'])) {
+                return $utilisateur; // Retourner les données de l'utilisateur
+            } else {
+                return null; // Mot de passe incorrect
+            }
+        } else {
+            return null; // Utilisateur non trouvé
+        }
+    }
 }
 ?>

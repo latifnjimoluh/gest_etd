@@ -2,7 +2,7 @@
 include 'includes/url.php';
 include '../classes/DBConnection.php';
 include '../classes/Utilisateur.php';
-include '../controller/SigninController.php';
+include '../controller/SignupController.php';
 
 use App\Controller\SigninController;
 
