@@ -52,6 +52,8 @@ $current_page = basename($_SERVER['REQUEST_URI']);
         <?php if ($is_logged_in): ?>
             <!-- Si l'utilisateur est connecté, afficher les liens Déconnexion et les infos utilisateur -->
             <li><a href="<?php echo BASE_URL; ?>profile.php" class="<?php echo ($current_page == 'profile.php') ? 'active' : ''; ?>">Mon Profil</a></li>
+            <li><a href="<?php echo BASE_URL; ?>etudiants.php" class="<?php echo ($current_page == 'etudiants.php') ? 'active' : ''; ?>">Etudiant</a></li>
+            <li><a href="<?php echo BASE_URL; ?>paiements.php" class="<?php echo ($current_page == 'paiements.php') ? 'active' : ''; ?>">Paiement</a></li>
             <li><a href="<?php echo BASE_URL; ?>logout.php" class="<?php echo ($current_page == 'logout.php') ? 'active' : ''; ?>">Se déconnecter</a></li>
             <li><a href="#">Bienvenue, <?php echo $_SESSION['user']['prenom']; ?></a></li> <!-- Afficher le prénom de l'utilisateur -->
         <?php else: ?>
