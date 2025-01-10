@@ -23,8 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 // Récupérer les étudiants solvables et insolvables
-$etudiants_insolvables = $paiement->getEtudiantsStatut('insolvable');
-$etudiants_solvables = $paiement->getEtudiantsStatut('solvable');
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+
+// Récupérer les étudiants solvables et insolvables avec la recherche
+$etudiants_insolvables = $paiement->getEtudiantsStatut('insolvable', $search);
+$etudiants_solvables = $paiement->getEtudiantsStatut('solvable', $search);
+
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +57,7 @@ $etudiants_solvables = $paiement->getEtudiantsStatut('solvable');
     <?php endif; ?>
 
     <!-- Formulaire de paiement -->
-    <form method="POST">
+    <form method="POST" id="payment-form">
         <div class="form-group">
             <label for="etudiant_id">Sélectionner un Étudiant</label>
             <select id="etudiant_id" name="etudiant_id" class="form-control" required>
@@ -69,11 +73,18 @@ $etudiants_solvables = $paiement->getEtudiantsStatut('solvable');
             <input type="number" id="montant" name="montant" class="form-control" required>
         </div>
 
-        <button type="submit" name="action" value="add" class="btn btn-success">Ajouter le Paiement</button>
-        <button type="submit" name="action" value="subtract" class="btn btn-danger">Soustraire du Paiement</button>
+        <button type="button" id="add-payment" class="btn btn-success">Ajouter le Paiement</button>
+        <button type="button" id="subtract-payment" class="btn btn-danger">Soustraire du Paiement</button>
     </form>
 
     <h2>Liste des Étudiants</h2>
+    <form method="GET" action="">
+        <div class="form-group">
+            <label for="search">Rechercher un étudiant (Nom ou Prénom)</label>
+            <input type="text" id="search" name="search" class="form-control" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+        </div>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
 
     <!-- Tableau des étudiants insolvables -->
     <h3>Étudiants Insolvables</h3>
@@ -81,20 +92,28 @@ $etudiants_solvables = $paiement->getEtudiantsStatut('solvable');
         <thead>
             <tr>
                 <th>Matricule</th>
-                <th>Nom et Prénom / Montant Payé / Montant Restant</th>
+                <th>Nom</th>
+                <th>Montant Payé</th>
+                <th>Montant Restant</th>
+                <th>Effectuer un Paiement</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="insolvables-body">
             <?php foreach ($etudiants_insolvables as $etudiant): 
                 $montant_paye = $etudiant['total_paye'] ?: 0;
                 $montant_rest = $etudiant['pension'] - $montant_paye;
             ?>
                 <tr>
                     <td><?= htmlspecialchars($etudiant['matricule']) ?></td>
+                    <td><?= htmlspecialchars($etudiant['nom']) . ' ' . htmlspecialchars($etudiant['prenom']) ?></td>
+                    <td><?= number_format($montant_paye, 2) ?> FCFA</td>
+                    <td><?= number_format($montant_rest, 2) ?> FCFA</td>
                     <td>
-                        <?= htmlspecialchars($etudiant['nom']) . ' ' . htmlspecialchars($etudiant['prenom']) ?><br>
-                        Montant Payé: <?= number_format($montant_paye, 2) ?> FCFA<br>
-                        Montant Restant: <?= number_format($montant_rest, 2) ?> FCFA
+                        <form method="POST" action="">
+                            <input type="hidden" name="etudiant_id" value="<?= $etudiant['id'] ?>">
+                            <input type="number" name="montant" required class="form-control" placeholder="Montant">
+                            <button type="submit" class="btn btn-success">Effectuer un Paiement</button>
+                        </form>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -107,26 +126,41 @@ $etudiants_solvables = $paiement->getEtudiantsStatut('solvable');
         <thead>
             <tr>
                 <th>Matricule</th>
-                <th>Nom et Prénom / Montant Payé / Montant Restant</th>
+                <th>Nom</th>
+                <th>Montant Payé</th>
+                <th>Montant Restant</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="solvables-body">
             <?php foreach ($etudiants_solvables as $etudiant): 
                 $montant_paye = $etudiant['total_paye'] ?: 0;
                 $montant_rest = $etudiant['pension'] - $montant_paye;
             ?>
                 <tr>
                     <td><?= htmlspecialchars($etudiant['matricule']) ?></td>
-                    <td>
-                        <?= htmlspecialchars($etudiant['nom']) . ' ' . htmlspecialchars($etudiant['prenom']) ?><br>
-                        Montant Payé: <?= number_format($montant_paye, 2) ?> FCFA<br>
-                        Montant Restant: <?= number_format($montant_rest, 2) ?> FCFA
-                    </td>
+                    <td><?= htmlspecialchars($etudiant['nom']) . ' ' . htmlspecialchars($etudiant['prenom']) ?></td>
+                    <td><?= number_format($montant_paye, 2) ?> FCFA</td>
+                    <td><?= number_format($montant_rest, 2) ?> FCFA</td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </div>
+
+<script>
+    document.getElementById('subtract-payment').addEventListener('click', function() {
+        const montantInput = document.getElementById('montant');
+        // Ajouter un signe négatif au montant avant l'envoi
+        montantInput.value = -Math.abs(montantInput.value);
+        document.getElementById('payment-form').submit();  // Soumettre le formulaire
+    });
+
+    document.getElementById('add-payment').addEventListener('click', function() {
+        const montantInput = document.getElementById('montant');
+        // Envoyer le formulaire normalement
+        document.getElementById('payment-form').submit();
+    });
+</script>
 
 </body>
 </html>
